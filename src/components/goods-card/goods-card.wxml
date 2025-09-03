@@ -1,0 +1,66 @@
+<view
+  id="{{goods.id}}"
+  class="goods-card"
+  bind:tap="clickHandle"
+  data-goods="{{ goods }}"
+>
+  <view class="goods-card__main">
+    <view class="goods-card__thumb" bind:tap="clickThumbHandle">
+      <t-image
+        wx:if="{{ !!goods.picUrl }}"
+        t-class="goods-card__img"
+        src="{{ goods.picUrl }}"
+        mode="aspectFill"
+        lazy-load
+      />
+    </view>
+    <view class="goods-card__body">
+      <view class="goods-card__upper">
+        <view wx:if="{{ goods.name }}" class="goods-card__title">
+          {{ goods.name }}
+        </view>
+        <!-- litemall模板中没有提供keywrods,暂用 brief 代替  -->
+        <!-- <view wx:if="{{ goods.keywords && !!goods.keywords.length }}" class="goods-card__tags">
+          <view
+          wx:for="{{ goods.keywords }}"
+          wx:key="index"
+          wx:for-item="tag"
+          class="goods-card__tag"
+          data-index="{{index}}"
+          >
+          {{tag}}
+          </view>
+          </view> -->
+        <view wx:if="{{ goods.brief }}" class="goods-card__tags">
+          {{ goods.brief }}
+        </view>
+      </view>
+      <view class="goods-card__down">
+        <price
+          wx:if="{{ goods.counterPrice }}"
+          wr-class="spec-for-price"
+          symbol-class="spec-for-symbol"
+          symbol="{{currency}}"
+          price="{{goods.counterPrice}}"
+        />
+        <price
+          wx:if="{{ goods.retailPrice && isValidityLinePrice }}"
+          wr-class="goods-card__origin-price"
+          symbol="{{currency}}"
+          price="{{goods.retailPrice}}"
+          type="delthrough"
+        />
+        <t-icon
+          class="goods-card__add-cart"
+          name="cart-add"
+          id="{{goods.id}}-cart"
+          data-id="{{goods.id}}"
+          catchtap="addCartHandle"
+          size="42rpx"
+          color="#FA550F"
+        />
+      </view>
+    </view>
+  </view>
+</view>
+

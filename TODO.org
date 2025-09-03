@@ -1,0 +1,16 @@
+* 样式
+** TODO TailWindCSS light/dark theme 主题设定
+
+* 逻辑
+** TODO Search
+** DONE 轮播图
+
+* 页面或组件
+** TODO url: `/pages/goods/details/index?spuId=${spuId}`,
+** TODO: order->cart->details
+** DONE pages/index 中设计的 load-more
+** DONE pages/index 中的 goods-list
+
+* 演示框架完成后
+** TODO 同步转异步
+** TODO 搭建真实中后台，django 或 tanstack,或其他js框架

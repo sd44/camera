@@ -1,0 +1,19 @@
+<t-tab-bar
+  t-class="t-tab-bar"
+  value="{{active}}"
+  bindchange="onChange"
+  theme="tag"
+  split="{{false}}"
+>
+  <!-- 使用 wx:for-item 可以指定数组当前元素的变量名，
+    使用 wx:for-index 可以指定数组当前下标的变量名： -->
+  <t-tab-bar-item
+    wx:for="{{list}}"
+    wx:for-item="item"
+    wx:for-index="index"
+    wx:key="index"
+    icon="{{item.icon}}"
+  >
+    {{item.text}}
+  </t-tab-bar-item>
+</t-tab-bar>

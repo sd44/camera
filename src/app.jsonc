@@ -1,0 +1,36 @@
+{
+  "$schema": "https://vite.icebreaker.top/app.json",
+  "pages": [
+    "pages/index/index",
+    "pages/camera/camera",
+    "pages/picture/picture",
+    "pages/hello-world/hello-world"
+  ],
+  "window": {
+    "navigationBarTitleText": "智能水印相机"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "获取位置信息用以添加照片水印" // 高速公路行驶持续后台定位
+    }
+  },
+  "__usePrivacyCheck__": true,
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "tabBar": {
+    "custom": true,
+    "color": "#666666",
+    "selectedColor": "#FF5F15",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    // Warning: list 必须与 src/custom-tab-bar/tab-bar-data.ts 中的 tabBarData 对应
+    // 且 pagePath 不能以 / 开头
+    "list": [
+      { "pagePath": "pages/index/index", "text": "首页" },
+      { "pagePath": "pages/hello-world/hello-world", "text": "Hello" }
+      // { "pagePath": "label_3", "text": "聊天" },
+      // { "pagePath": "label_4", "text": "我的" }
+    ]
+  }
+}

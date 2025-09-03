@@ -1,0 +1,4 @@
+<view class="flex flex-col items-center justify-center mx-4 mt-4">
+  <view>hello weapp-vite!</view>
+  <view>from src/pages/hello-world/hello-world</view>
+</view>

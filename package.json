@@ -1,0 +1,68 @@
+{
+  "name": "weapp-vite-tailwindcss-tdesign-template",
+  "type": "module",
+  "version": "1.0.2",
+  "private": true,
+  "description": "原生微信小程序 weapp-vite + tailwindcss + tdesign 模板",
+  "author": "ice breaker <1324318532@qq.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weapp-vite/weapp-vite.git",
+    "directory": "apps/weapp-vite-tailwindcss-tdesign-template"
+  },
+  "bugs": {
+    "url": "https://github.com/weapp-vite/weapp-vite/issues"
+  },
+  "keywords": [],
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "scripts": {
+    "dev": "weapp-vite dev",
+    "dev:open": "weapp-vite dev -o",
+    "build": "weapp-vite build",
+    "open": "weapp-vite open",
+    "g": "weapp-vite generate",
+    "postinstall": "weapp-tw patch",
+    "format": "bunx eslint --fix && bunx ultracite format",
+    "prepare": "husky",
+    "codegen": "bun graphql-codegen"
+  },
+  "dependencies": {
+    "tdesign-miniprogram": "^1.10.1",
+    "@urql/core": "^6.0.1",
+    "graphql": "^16.11.0"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.7",
+    "@biomejs/biome": "^2.2.2",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@egoist/tailwindcss-icons": "^1.9.0",
+    "@html-eslint/eslint-plugin": "^0.45.0",
+    "@html-eslint/parser": "^0.45.0",
+    "@iconify-json/mdi": "^1.2.3",
+    "autoprefixer": "^10.4.21",
+    "commitizen": "^4.3.1",
+    "conventional-changelog-cli": "^5.0.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-wxml": "^0.8.0",
+    "husky": "^9.1.7",
+    "miniprogram-api-typings": "^4.1.0",
+    "postcss": "^8.5.6",
+    "sass": "^1.91.0",
+    "sharp": "^0.34.3",
+    "svgo": "^4.0.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.9.2",
+    "ultracite": "5.2.5",
+    "vite-plugin-image-optimizer": "^2.0.2",
+    "weapp-tailwindcss": "latest",
+    "weapp-vite": "^5.1.3"
+  }
+}

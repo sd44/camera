@@ -1,0 +1,13 @@
+<view class="block">
+  <t-grid column="{{4}}" theme="default">
+    <t-grid-item
+      wx:for = "{{tablist.litemallCategory}}"
+      wx:key = "index"
+      t-class-image="image"
+      data-id="{{item.id}}"
+      text="{{item.name}}"
+      image="{{item.iconUrl}}"
+      @tap="onClickItem"
+    />
+  </t-grid>
+</view>

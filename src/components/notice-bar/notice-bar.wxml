@@ -1,0 +1,14 @@
+<t-notice-bar
+  visible="{{visible}}"
+  suffixIcon="chevron-right"
+  bind:click="click"
+>
+  <view slot="content" class="inline"> 这是一条置顶通知信息 </view>
+  <t-link
+    slot="operation"
+    content="详情"
+    theme="primary"
+    underline="{{false}}"
+    navigator-props="{{navigatorProps}}"
+  />
+</t-notice-bar>

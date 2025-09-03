@@ -1,0 +1,99 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
+  "files": {
+    "includes": [
+      "**",
+      "!node_modules",
+      "!dist",
+      "!build",
+      "!.vscode",
+      "!idea",
+      "!**/*.log",
+      "!.DS_Store",
+      "!project.config.json",
+      "!project.private.config.json",
+      // "!**/*.wxml",
+      "!**/*.wxss",
+      "!**/*.wxs"
+    ],
+    "ignoreUnknown": false
+  },
+  "vcs": {
+    "enabled": false,
+    "clientKind": "git",
+    "useIgnoreFile": false
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100,
+    "lineEnding": "lf"
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noEmptyBlockStatements": "off",
+        "noConsole": "info",
+        "noBitwiseOperators": "off",
+        "useIterableCallbackReturn": "info",
+        "noExplicitAny": "info"
+      },
+      "style": {
+        "useFilenamingConvention": "off",
+        "noMagicNumbers": "off",
+        "noParameterAssign": "info",
+        "noNestedTernary": "info",
+        "noParameterProperties": "info"
+      },
+      "nursery": {
+        "noShadow": "info",
+        "noUnnecessaryConditions": "info"
+      },
+      "complexity": {
+        "noForEach": "info",
+        "noExcessiveCognitiveComplexity": "info"
+      },
+      "performance": { "useTopLevelRegex": "info" }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double",
+      "semicolons": "asNeeded"
+    },
+    "globals": [
+      "App",
+      "Component",
+      "Page",
+      "wx",
+      "global",
+      "pixelRatio",
+      "getApp",
+      "getCurrentPages",
+      "require",
+      "Behavior",
+      "__wxConfig"
+    ]
+  },
+  "json": {
+    "formatter": {
+      "trailingCommas": "none"
+    },
+    "parser": {
+      "allowComments": true,
+      "allowTrailingCommas": false
+    }
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "extends": ["ultracite"]
+}

@@ -1,0 +1,13 @@
+<view class="swiper-wrap">
+  <t-swiper
+    wx:if="{{imgSrcs.length > 0}}"
+    current="{{current}}"
+    autoplay="{{autoplay}}"
+    duration="{{duration}}"
+    interval="{{interval}}"
+    navigation="{{navigation}}"
+    imageProps="{{swiperImageProps}}"
+    list="{{imgSrcs}}"
+    bind:click="navToActivityDetail"
+  />
+</view>
