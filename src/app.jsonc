@@ -10,7 +10,7 @@
     "navigationBarTitleText": "智能水印相机"
   },
 
-  // 小程序隐私保护指引内容介绍
+  // NOTE: 小程序隐私保护指引内容介绍
   // https://developers.weixin.qq.com/miniprogram/dev/framework/user-privacy/miniprogram-intro.html
   "__usePrivacyCheck__": true,
   "permission": {
@@ -24,13 +24,9 @@
       "desc": "拍照或录视频"
     }
   },
-  // TODO: 这里填写小程序所需的私密接口，新版是否必须填写待确认
-  "requiredPrivateInfos": [
-    "getLocation",
-    "onLocationChange",
-    "chooseAddress",
-    "saveImageToPhotosAlbum"
-  ],
+  // NOTE: 这里填写小程序所需的地理位置权限
+  // https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#requiredPrivateInfos
+  "requiredPrivateInfos": ["getLocation", "onLocationChange"],
   "componentFramework": "glass-easel",
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents",
