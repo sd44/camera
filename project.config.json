@@ -3,6 +3,7 @@
   "miniprogramRoot": "dist/",
   "compileType": "miniprogram",
   "setting": {
+    "privacyApiNeedAuthorize": true,
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],

@@ -53,7 +53,7 @@
         "noUnnecessaryConditions": "info"
       },
       "complexity": {
-        "noForEach": "info",
+        "noForEach": "off",
         "noExcessiveCognitiveComplexity": "info"
       },
       "performance": { "useTopLevelRegex": "info" }

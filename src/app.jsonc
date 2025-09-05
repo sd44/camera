@@ -7,26 +7,32 @@
     "pages/hello-world/hello-world"
   ],
   "window": {
-    "navigationBarTitleText": "智能水印相机"
+    "navigationBarTitleText": "墨韩相机"
   },
 
+  // "subPackages": [
+  //   {
+  //     "root": "services",
+  //     "pages": ["pages/privacy/auth/auth"]
+  //   }
+  // ],
   // NOTE: 小程序隐私保护指引内容介绍
   // https://developers.weixin.qq.com/miniprogram/dev/framework/user-privacy/miniprogram-intro.html
   "__usePrivacyCheck__": true,
   "permission": {
     "scope.userLocation": {
       "desc": "获取位置信息用以添加照片水印" // 高速公路行驶持续后台定位
-    },
-    "scope.writePhotosAlbum": {
-      "desc": "保存照片到相册"
-    },
-    "scope.camera": {
-      "desc": "拍照或录视频"
     }
+    // "scope.writePhotosAlbum": {
+    //   "desc": "保存照片到相册"
+    // },
+    // "scope.camera": {
+    //   "desc": "拍照或录视频"
+    // }
   },
   // NOTE: 这里填写小程序所需的地理位置权限
   // https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#requiredPrivateInfos
-  "requiredPrivateInfos": ["getLocation", "onLocationChange"],
+  "requiredPrivateInfos": ["getLocation", "onLocationChange", "chooseLocation"],
   "componentFramework": "glass-easel",
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents",
@@ -41,6 +47,8 @@
     "list": [
       { "pagePath": "pages/index/index", "text": "首页" },
       { "pagePath": "pages/hello-world/hello-world", "text": "Hello" }
+      // { "pagePath": "pages/camera/camera", "text": "拍摄水印相片" },
+      // { "pagePath": "pages/picture/picture", "text": "图片添加水印" }
       // { "pagePath": "label_3", "text": "聊天" },
       // { "pagePath": "label_4", "text": "我的" }
     ]

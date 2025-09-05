@@ -1,71 +1,111 @@
-import ActionSheet, { ActionSheetTheme } from "tdesign-miniprogram/action-sheet/index"
-
-const firstGrid = [
-  {
-    label: "微信",
-    image: "https://tdesign.gtimg.com/mobile/demos/wechat.png",
-  },
-  {
-    label: "朋友圈",
-    image: "https://tdesign.gtimg.com/mobile/demos/times.png",
-  },
-  {
-    label: "QQ",
-    image: "https://tdesign.gtimg.com/mobile/demos/qq.png",
-  },
-  {
-    label: "企业微信",
-    image: "https://tdesign.gtimg.com/mobile/demos/wecom.png",
-  },
-  {
-    label: "收藏",
-    icon: "star",
-  },
-  {
-    label: "刷新",
-    icon: "refresh",
-  },
-  {
-    label: "下载",
-    icon: "download",
-  },
-  {
-    label: "复制",
-    icon: "queue",
-  },
-]
+// pages/index/index.js
 Page({
+  /**
+   * 页面的初始数据
+   */
   data: {
-    mode: "light",
+    camera: false,
+    userLocation: false,
+    writePhotosAlbum: false,
   },
-  switchMode() {
-    if (this.data.mode === "light") {
-      this.setData({
-        mode: "dark",
-      })
-    } else {
-      this.setData({
-        mode: "light",
-      })
-    }
+
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad() {
+    this.getAuth()
   },
-  async copy(e: WechatMiniprogram.BaseEvent) {
-    if (e.mark?.url) {
-      await wx.setClipboardData({
-        data: e.mark.url,
-      })
-    }
-  },
-  handleSelected(_e: WechatMiniprogram.CustomEvent) {},
-  onLoad() {},
-  handleAction() {
-    ActionSheet.show({
-      theme: ActionSheetTheme.Grid,
-      selector: "#t-action-sheet",
-      context: this,
-      items: firstGrid,
-      align: "center",
-      description: "",
+  getAuth() {
+    wx.getSetting({
+      success: (res) => {
+        console.log(res.authSetting)
+        this.setData({
+          camera: res.authSetting["scope.camera"],
+          writePhotosAlbum: res.authSetting["scope.writePhotosAlbum"],
+          userLocation: res.authSetting["scope.userLocation"],
+        })
+      },
     })
   },
+
+  getWritePhotosAlbum() {
+    wx.authorize({
+      scope: "scope.writePhotosAlbum",
+      success: () => {
+        this.getAuth()
+      },
+    })
+  },
+
+  getCamera() {
+    wx.authorize({
+      scope: "scope.camera",
+      success: () => {
+        this.getAuth()
+      },
+    })
+  },
+
+  getUserLocation() {
+    wx.authorize({
+      scope: "scope.userLocation",
+      success: () => {
+        this.getAuth()
+      },
+    })
+  },
+
+  goCamera() {
+    wx.navigateTo({
+      url: "/pages/camera/camera",
+    })
+  },
+
+  goPicture() {
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ["image"],
+      sourceType: ["album"],
+      success: (res) => {
+        console.log(res)
+        wx.navigateTo({
+          url: `/pages/picture/picture?imageUrl=${res.tempFiles[0].tempFilePath}`,
+        })
+      },
+    })
+  },
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady() {},
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow() {},
+
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide() {},
+
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload() {},
+
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh() {},
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom() {},
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage() {},
 })
