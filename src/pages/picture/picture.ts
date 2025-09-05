@@ -1,8 +1,10 @@
+import { config } from "~/config"
 import QQMapWX from "~/libs/qqmap-wx-jssdk"
 import { formatTime } from "~/utils/date"
+import log from "~/utils/log"
 
 const qqmapsdk = new QQMapWX({
-  key: "RTQBZ-S6GC5-KG5I2-IRR5G-QFWR2-7GF3N", // 必填
+  key: config.qqMapKey, // 从配置文件中获取密钥
 })
 
 Page({
@@ -23,13 +25,12 @@ Page({
    */
   onLoad(options) {
     this.getTime()
-    this.getLocation()
 
     if (options.imageUrl) {
       try {
         // 解码URL参数
         const imageUrl = decodeURIComponent(options.imageUrl)
-        console.log("接收到的图片URL:", imageUrl)
+        log.info("接收到的图片URL:", imageUrl)
 
         // 最好是在导入照片时就直接做一个安全检测
         // let checkResult = await this.checkImage(imageUrl)
@@ -38,7 +39,7 @@ Page({
         this.setData({ imageUrl })
         this.init(imageUrl)
       } catch (e) {
-        console.error("处理图片URL参数异常", e)
+        log.error("处理图片URL参数异常", e)
         wx.showToast({
           title: "图片加载失败",
           icon: "none",
@@ -60,7 +61,7 @@ Page({
     const systemInfo = wx.getWindowInfo()
     const canvasWidth = systemInfo.screenWidth
 
-    console.log("初始化图片:", imageUrl)
+    log.info("初始化图片:", imageUrl)
     wx.showLoading({
       title: "加载图片中...",
     })
@@ -68,7 +69,7 @@ Page({
     wx.getImageInfo({
       src: imageUrl,
       success: (res) => {
-        console.log("图片信息获取成功:", res)
+        log.info("图片信息获取成功:", res)
         const watermarkScale = res.width / canvasWidth
         this.setData({
           canvasHeight: Math.round(res.height / watermarkScale),
@@ -77,10 +78,10 @@ Page({
         })
         wx.hideLoading()
 
-        console.log(this.data.canvasHeight, this.data.canvasWidth)
+        log.info(this.data.canvasHeight, this.data.canvasWidth)
       },
       fail: (err) => {
-        console.error("获取图片信息失败:", err)
+        log.error("获取图片信息失败:", err)
         wx.hideLoading()
         wx.showToast({
           title: "图片加载失败",
@@ -119,70 +120,41 @@ Page({
   },
 
   /**
-   * 获取地址信息
-   */
-  getLocation() {
-    wx.getLocation({
-      success: (res) => {
-        qqmapsdk.reverseGeocoder({
-          location: {
-            latitude: res.latitude,
-            longitude: res.longitude,
-          },
-          success: (res: any) => {
-            const address = res.result.address
-            this.setData({
-              address,
-            })
-          },
-        })
-      },
-      fail: (err) => {
-        console.error("获取图片信息失败:", err)
-        wx.hideLoading()
-        wx.showToast({
-          title: "图片加载失败",
-          icon: "none",
-          duration: 2000,
-        })
-        // 如果是网络图片加载失败，可以尝试使用默认图片
-        if (imageUrl !== this.data.imageUrl) {
-          setTimeout(() => {
-            this.init(this.data.imageUrl)
-          }, 1000)
-        }
-      },
-    })
-  },
-
-  /**
    * 手动选择地点
    */
   chooseLocation() {
     wx.chooseLocation({
       success: (res) => {
-        console.log(res)
+        log.info(res)
         this.setData({
           address: res.address,
         })
+        qqmapsdk.geocoder({
+          address: res.address,
+          success: (res: any) => {
+            log.info(res)
+            this.setData({
+              latitude: res.result.location.lat,
+              longitude: res.result.location.lng,
+            })
+          },
+          fail: (err: any) => {
+            log.error(err)
+            this.setData({
+              latitude: 0,
+              longitude: 0,
+            })
+          },
+        })
       },
       fail: (err) => {
-        console.log(err)
-      },
-      fail: (err) => {
-        console.error("获取图片信息失败:", err)
+        log.error("获取图片信息失败:", err)
         wx.hideLoading()
         wx.showToast({
           title: "图片加载失败",
           icon: "none",
           duration: 2000,
         })
-        // 如果是网络图片加载失败，可以尝试使用默认图片
-        if (imageUrl !== this.data.imageUrl) {
-          setTimeout(() => {
-            this.init(this.data.imageUrl)
-          }, 1000)
-        }
       },
     })
   },
@@ -212,10 +184,10 @@ Page({
    */
   async createPicture() {
     const imageUrl = this.data.imageUrl
-    console.log(imageUrl)
+    log.info(imageUrl)
     // let checkResult = await this.checkImage(imageUrl)
     const picture = (await this.addWatermark(imageUrl)) as string
-    console.log(picture)
+    log.info(picture)
     wx.previewImage({
       urls: [picture],
     })
@@ -268,14 +240,13 @@ Page({
    */
   checkText() {
     //这个目前不需要，暂时不支持自定义文字
-    return new Promise((resolve, reject) => {})
   },
 
   /**
    * 给图片添加水印
    */
   addWatermark(imageUrl: string) {
-    console.log(imageUrl)
+    log.info(imageUrl)
     return new Promise((resolve, reject) => {
       wx.showLoading({
         title: "图片生成中...",
@@ -341,7 +312,7 @@ Page({
     const week = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"][
       dateStr.getDay()
     ]
-    console.log(date, week)
+    log.info(date, week)
     this.setData({
       date,
       week,

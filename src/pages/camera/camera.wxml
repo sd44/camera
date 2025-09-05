@@ -14,6 +14,8 @@
 />
 
 <view class="watermark">
+  <view class="week">{{'经度：' + longitude}}</view>
+  <view class="week">{{'纬度：' + latitude}}</view>
   <view class="week">{{week}}</view>
   <view class="time">{{date+' '+time}}</view>
   <view class="location_box">

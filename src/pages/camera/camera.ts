@@ -1,8 +1,12 @@
+import { config } from "~/config/index"
 import QQMapWX from "~/libs/qqmap-wx-jssdk"
 import { formatTime } from "~/utils/date"
+import log from "~/utils/log"
+
+const CAMERA_PADDING_BOTTOM = 90 // 相机页面底部的预留空间高度，可根据设计需求调整
 
 const qqmapsdk = new QQMapWX({
-  key: "RTQBZ-S6GC5-KG5I2-IRR5G-QFWR2-7GF3N", //在这里输入你在腾讯位置服务平台申请的KEY
+  key: config.qqMapKey, // 从配置文件中获取密钥
 })
 
 Page({
@@ -17,32 +21,48 @@ Page({
     // 经度，范围为 -180~180，负数表示西经。使用 gcj02 国测局坐标系
     longitude: 0.0,
     address: "",
-    addressName: "",
     cameraWidth: 0,
     cameraHeight: 0,
+    canvasWidth: 0,
+    canvasHeight: 0,
+
     tempImagePath: "",
 
     timer: 0,
   },
 
+  // 窗口大小变化的回调函数
+  updateCameraSizeCallback: null as any,
+
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {
+    this.updateCameraSize()
+
+    // 保存更新相机尺寸的回调函数，以便在卸载时移除
+    this.updateCameraSizeCallback = () => {
+      this.updateCameraSize()
+    }
+
+    wx.onWindowResize(this.updateCameraSizeCallback)
+  },
+  updateCameraSize() {
     const systemInfo = wx.getWindowInfo()
     const screenWidth = systemInfo.screenWidth
     const screenHeight = systemInfo.screenHeight
     const statusBarHeight = systemInfo.statusBarHeight
     const menuButtonInfo = wx.getMenuButtonBoundingClientRect()
-    const cameraWidth = screenWidth
+
+    const menuButtonTopDistance = menuButtonInfo.top - statusBarHeight
     const cameraHeight =
       screenHeight -
       statusBarHeight -
       menuButtonInfo.height -
-      (menuButtonInfo.top - systemInfo.statusBarHeight) * 2 -
-      90
+      menuButtonTopDistance * 2 -
+      CAMERA_PADDING_BOTTOM
+    const cameraWidth = screenWidth
 
-    console.log(systemInfo)
     this.setData({
       cameraWidth,
       cameraHeight,
@@ -77,9 +97,8 @@ Page({
     // 第一步：检查用户是否授权位置权限
     wx.getSetting({
       success: (settingRes) => {
-        // 若未授权，引导用户授权
+        // 若已授权，直接开启定位
         if (settingRes.authSetting["scope.userLocation"]) {
-          // 已授权，直接开启定位
           this.startLocationUpdate()
         } else {
           wx.authorize({
@@ -89,15 +108,36 @@ Page({
               this.startLocationUpdate()
             },
             fail: () => {
-              // 用户拒绝授权，提示无法使用定位功能
-              wx.showToast({
-                title: "请授权位置权限以使用该功能",
-                icon: "none",
-                duration: 2000,
+              // 用户拒绝授权，引导用户手动开启
+              wx.showModal({
+                title: "位置权限提示",
+                content: "需要获取您的地理位置，请确认授权",
+                confirmText: "去设置",
+                cancelText: "取消",
+                success: (res) => {
+                  if (res.confirm) {
+                    wx.openSetting({
+                      success: (res2) => {
+                        if (res2.authSetting["scope.userLocation"]) {
+                          this.startLocationUpdate()
+                        }
+                      },
+                    })
+                  } else {
+                    wx.showToast({
+                      title: "未授权位置权限，部分功能受限",
+                      icon: "none",
+                      duration: 2000,
+                    })
+                  }
+                },
               })
             },
           })
         }
+      },
+      fail: (err) => {
+        log.error("获取设置失败", err)
       },
     })
   },
@@ -108,7 +148,7 @@ Page({
       success: () => {
         // 定位开启成功后，监听位置变化
         wx.onLocationChange((res) => {
-          console.log("最新位置：", res)
+          log.info("最新位置：", res)
           // 示例：更新页面数据中的经纬度，用于地图渲染或其他逻辑
           this.setData({
             latitude: res.latitude,
@@ -120,7 +160,7 @@ Page({
         })
       },
       fail: (err) => {
-        console.error("开启定位失败：", err)
+        log.error("开启定位失败：", err)
         wx.showToast({
           title: "定位开启失败，请检查设置",
           icon: "none",
@@ -132,10 +172,19 @@ Page({
   // 逆地理编码：将经纬度转换为具体地址（如"北京市朝阳区..."）
   getAddressFromLocation(lat: number, lng: number) {
     qqmapsdk.reverseGeocoder({
-      location: { latitude: lat, longitude: lng },
+      location: { latitude: lat, longitude: lng, poi_options: "address_format=short" },
       success: (addrRes: any) => {
-        const address = addrRes.result.address // 完整地址
-        this.setData({ address }) // 更新到页面数据
+        if (addrRes?.result?.address) {
+          const address = addrRes.result.formatted_addresses.recommend // 完整地址
+          this.setData({ address }) // 更新到页面数据
+        } else {
+          log.error("逆地理编码返回数据格式异常", addrRes)
+          this.setData({ address: "未知位置" })
+        }
+      },
+      fail: (error: any) => {
+        log.error("逆地理编码失败", error)
+        this.setData({ address: "定位失败" })
       },
     })
   },
@@ -187,87 +236,230 @@ Page({
   takePhoto() {
     const ctx = wx.createCameraContext()
 
+    // 显示加载提示
+    wx.showLoading({
+      title: "处理中...",
+      mask: true,
+    })
+
     ctx.takePhoto({
       quality: "high",
-      success: async (res) => {
-        console.log(res)
-        this.setData({
-          tempImagePath: res.tempImagePath,
-        })
-        // 先图片内容安全检测
-        // let checkResult = await this.checkImage(imageUrl)
-        // if(checkResult==0){}
+      success: (res) => {
+        if (!res?.tempImagePath) {
+          wx.hideLoading()
+          wx.showToast({
+            title: "拍照结果异常",
+            icon: "none",
+          })
+          return
+        }
 
-        const addWatermark = (await this.addWatermark(res.tempImagePath)) as string
-        wx.previewImage({
-          urls: [addWatermark],
+        wx.getImageInfo({
+          src: res.tempImagePath, // 传入拍摄得到的临时路径
+          success: async (imageInfo) => {
+            log.info("图片信息", imageInfo)
+
+            // 检查图片尺寸是否合理
+            if (
+              !(imageInfo.width && imageInfo.height) ||
+              imageInfo.width <= 0 ||
+              imageInfo.height <= 0
+            ) {
+              wx.hideLoading()
+              wx.showToast({
+                title: "图片尺寸异常",
+                icon: "none",
+              })
+              return
+            }
+
+            this.setData({
+              canvasWidth: imageInfo.width, // 图片实际宽度
+              canvasHeight: imageInfo.height, // 图片实际高度
+              tempImagePath: res.tempImagePath,
+            })
+
+            // 图片内容安全检测可在此处添加
+            // let checkResult = await this.checkImage(res.tempImagePath)
+            // if(checkResult==0){
+
+            try {
+              const watermarkedImage = await this.addWatermark(res.tempImagePath)
+              wx.hideLoading()
+
+              if (!watermarkedImage) {
+                throw new Error("水印图片生成失败")
+              }
+
+              wx.previewImage({
+                urls: [watermarkedImage as string],
+                fail: (previewErr) => {
+                  log.error("预览失败", previewErr)
+                  wx.showToast({
+                    title: "图片预览失败",
+                    icon: "none",
+                  })
+                },
+              })
+
+              this.setData({
+                tempImagePath: "",
+              })
+            } catch (error) {
+              wx.hideLoading()
+              log.error("添加水印失败", error)
+              wx.showToast({
+                title: "添加水印失败",
+                icon: "none",
+              })
+            }
+            // }
+          },
+          fail: (error) => {
+            wx.hideLoading()
+            log.error("获取图片信息失败", error)
+            wx.showToast({
+              title: "获取图片信息失败",
+              icon: "none",
+            })
+          },
         })
-        this.setData({
-          tempImagePath: "",
+      },
+      fail: (error) => {
+        wx.hideLoading()
+        log.error("拍照失败", error)
+        wx.showToast({
+          title: "拍照失败",
+          icon: "none",
         })
       },
     })
   },
 
   /**
+   * 获取Canvas节点
+   */
+  getCanvasNode(): Promise<{ node: WechatMiniprogram.Canvas; width: number; height: number }> {
+    // 使用wx.createSelectorQuery()的in方法指定页面上下文
+    const query = wx.createSelectorQuery().in(this)
+
+    return new Promise((resolve, reject) => {
+      query
+        .select("#canvas")
+        .fields({ node: true, size: true })
+        .exec((res) => {
+          if (res?.[0]?.node) {
+            resolve(res[0])
+          } else {
+            reject(new Error("获取Canvas元素失败"))
+          }
+        })
+    })
+  },
+
+  /**
+   * 加载图片到Canvas
+   */
+  async loadImage(canvas: WechatMiniprogram.Canvas, src: string) {
+    const image = canvas.createImage()
+    await new Promise<void>((resolve, reject) => {
+      image.onload = () => resolve()
+      image.onerror = () => reject(new Error("图片加载失败"))
+      image.src = src
+    })
+    return image
+  },
+
+  /**
+   * 将Canvas转换为临时文件
+   */
+  async canvasToTempFile(canvas: WechatMiniprogram.Canvas) {
+    const res = await wx.canvasToTempFilePath({ canvas })
+    if (!res?.tempFilePath) {
+      throw new Error("转换为图片失败")
+    }
+    return res.tempFilePath
+  },
+
+  /**
    * 给图片添加水印
    */
-  addWatermark(imageUrl: string) {
-    console.log(imageUrl)
-    return new Promise((resolve, reject) => {
-      wx.showLoading({
-        title: "图片生成中...",
-      })
-      const query = wx.createSelectorQuery()
-      const x = query.select("#canvas").fields({
-        node: true,
-        size: true,
-      })
+  async addWatermark(imageUrl: string) {
+    if (!imageUrl) {
+      throw new Error("图片路径为空")
+    }
 
-      x.exec((res) => {
-        const canvas = res[0].node as WechatMiniprogram.Canvas
-        const ctx = canvas.getContext("2d")
+    try {
+      // 获取Canvas节点
+      const canvasRes = await this.getCanvasNode()
+      if (!canvasRes?.node) {
+        throw new Error("获取Canvas节点失败")
+      }
 
-        const dpr = wx.getWindowInfo().pixelRatio
-        const canvasWidth: number = res[0].width
-        const canvasHeight: number = res[0].height
-        canvas.width = canvasWidth * dpr
-        canvas.height = canvasHeight * dpr
-        ctx.scale(dpr, dpr)
+      const canvas = canvasRes.node as WechatMiniprogram.Canvas
+      const ctx = canvas.getContext("2d")
+      if (!ctx) {
+        throw new Error("获取Canvas上下文失败")
+      }
 
-        // 绘制背景图片
-        const image = canvas.createImage()
-        image.onload = () => {
-          ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight)
+      // 设置Canvas尺寸
+      const dpr = wx.getWindowInfo().pixelRatio || 1
+      const { canvasWidth, canvasHeight } = this.data
 
-          ctx.font = "normal 28px null"
-          ctx.fillStyle = "#ffffff"
-          ctx.textBaseline = "bottom"
+      if (!(canvasWidth && canvasHeight) || canvasWidth <= 0 || canvasHeight <= 0) {
+        throw new Error("Canvas尺寸无效")
+      }
 
-          // 绘制地址
-          ctx.fillText(this.data.address, 20, canvasHeight - 20)
+      canvas.width = canvasWidth * dpr
+      canvas.height = canvasHeight * dpr
+      ctx.scale(dpr, dpr)
 
-          // 绘制时间
-          ctx.fillText(`${this.data.date} ${this.data.time}`, 20, canvasHeight - 65)
+      // 加载并绘制图片
+      const image = await this.loadImage(canvas, imageUrl)
+      ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight)
 
-          // 绘制星期
-          ctx.fillText(this.data.week, 20, canvasHeight - 115)
+      // 添加半透明背景以增强水印可读性
+      ctx.fillStyle = "rgba(0, 0, 0, 0.3)"
+      ctx.fillRect(0, canvasHeight - 230, canvasWidth, 240)
 
-          wx.canvasToTempFilePath({
-            canvas,
-            success: (res) => {
-              wx.hideLoading()
-              resolve(res.tempFilePath)
-            },
-            fail: () => {
-              wx.hideLoading()
-              reject(new Error("转换为图片失败"))
-            },
-          })
+      // 设置文本样式
+      ctx.font = "normal 28px sans-serif"
+      ctx.fillStyle = "#ffffff"
+      ctx.textBaseline = "bottom"
+
+      // 绘制地址 - 添加文本截断处理
+      const address = this.data.address || "未知位置"
+      const maxWidth = canvasWidth - 40
+      let displayAddress = address
+
+      // 简单的文本截断处理
+      if (ctx.measureText(address).width > maxWidth) {
+        let tempText = address
+        while (ctx.measureText(`${tempText}...`).width > maxWidth && tempText.length > 0) {
+          tempText = tempText.substring(0, tempText.length - 1)
         }
-        image.src = imageUrl
-      })
-    })
+        displayAddress = `${tempText}...`
+      }
+
+      ctx.fillText(displayAddress, 20, canvasHeight - 20)
+
+      // 绘制时间
+      const dateTime = `${this.data.date || "未知日期"} ${this.data.time || "未知时间"}`
+      ctx.fillText(dateTime, 20, canvasHeight - 60)
+
+      // 绘制星期
+      ctx.fillText(this.data.week || "未知星期", 20, canvasHeight - 100)
+
+      // 绘制经纬度
+      ctx.fillText(`纬度： ${this.data.latitude.toFixed(8)}`, 20, canvasHeight - 140)
+      ctx.fillText(`经度： ${this.data.longitude.toFixed(8)}`, 20, canvasHeight - 180)
+
+      // 转换为图片并返回
+      return await this.canvasToTempFile(canvas)
+    } catch (error) {
+      log.error("添加水印失败", error)
+      throw error
+    }
   },
 
   /**
@@ -298,13 +490,13 @@ Page({
   chooseLocation() {
     wx.chooseLocation({
       success: (res) => {
-        console.log(res)
+        log.info(res)
         this.setData({
           address: res.address,
         })
       },
       fail: (err) => {
-        console.log(err)
+        log.info(err)
       },
     })
   },
@@ -325,6 +517,16 @@ Page({
   onUnload() {
     // 移除地理位置监听（若有多个监听，可传具体回调函数移除指定监听）
     wx.offLocationChange()
+
+    // 清除定时器，防止内存泄漏
+    if (this.data.timer) {
+      clearInterval(this.data.timer)
+    }
+
+    // 移除窗口大小变化的监听器
+    if (this.updateCameraSizeCallback) {
+      wx.offWindowResize(this.updateCameraSizeCallback)
+    }
   },
 
   /**
