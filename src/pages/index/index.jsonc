@@ -1,7 +1,5 @@
 {
   "$schema": "https://vite.icebreaker.top/page.json",
-  "usingComponents": {
-    // "privacy-popup": "/components/privacyPopup/privacyPopup"
-  },
-  "navigationBarTitleText": "墨韩经纬相机"
+  "usingComponents": {},
+  "navigationBarTitleText": "墨韩办公工具箱"
 }

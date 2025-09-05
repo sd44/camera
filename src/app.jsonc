@@ -7,7 +7,7 @@
     "pages/hello-world/hello-world"
   ],
   "window": {
-    "navigationBarTitleText": "墨韩相机"
+    "navigationBarTitleText": "墨韩办公工具箱"
   },
 
   // "subPackages": [
@@ -23,6 +23,7 @@
     "scope.userLocation": {
       "desc": "获取位置信息用以添加照片水印" // 高速公路行驶持续后台定位
     }
+    // don't need these permissions now
     // "scope.writePhotosAlbum": {
     //   "desc": "保存照片到相册"
     // },
@@ -49,8 +50,6 @@
       { "pagePath": "pages/hello-world/hello-world", "text": "Hello" }
       // { "pagePath": "pages/camera/camera", "text": "拍摄水印相片" },
       // { "pagePath": "pages/picture/picture", "text": "图片添加水印" }
-      // { "pagePath": "label_3", "text": "聊天" },
-      // { "pagePath": "label_4", "text": "我的" }
     ]
   }
 }

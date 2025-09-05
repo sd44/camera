@@ -26,17 +26,31 @@ Page({
     this.getLocation()
 
     if (options.imageUrl) {
-      const imageUrl = options.imageUrl
+      try {
+        // 解码URL参数
+        const imageUrl = decodeURIComponent(options.imageUrl)
+        console.log("接收到的图片URL:", imageUrl)
 
-      // 最好是在导入照片时就直接做一个安全检测
-      // let checkResult = await this.checkImage(imageUrl)
+        // 最好是在导入照片时就直接做一个安全检测
+        // let checkResult = await this.checkImage(imageUrl)
 
-      this.init(imageUrl)
-      // this.setData({
-      // 	imageUrl
-      // })
+        // 设置图片URL并初始化
+        this.setData({ imageUrl })
+        this.init(imageUrl)
+      } catch (e) {
+        console.error("处理图片URL参数异常", e)
+        wx.showToast({
+          title: "图片加载失败",
+          icon: "none",
+          duration: 2000,
+        })
+        // 使用默认图片
+        this.init(this.data.imageUrl)
+      }
+    } else {
+      // 没有传入图片URL，使用默认图片
+      this.init(this.data.imageUrl)
     }
-    // this.init(this.data.imageUrl)
   },
 
   /**
@@ -45,19 +59,40 @@ Page({
   init(imageUrl: string) {
     const systemInfo = wx.getWindowInfo()
     const canvasWidth = systemInfo.screenWidth
-    const dpr = systemInfo.pixelRatio
+
+    console.log("初始化图片:", imageUrl)
+    wx.showLoading({
+      title: "加载图片中...",
+    })
+
     wx.getImageInfo({
       src: imageUrl,
       success: (res) => {
-        console.log(res)
+        console.log("图片信息获取成功:", res)
         const watermarkScale = res.width / canvasWidth
         this.setData({
           canvasHeight: Math.round(res.height / watermarkScale),
           canvasWidth,
-          imageUrl: res.path,
+          imageUrl: res.path || imageUrl, // 如果res.path存在则使用，否则保留原始URL
         })
+        wx.hideLoading()
 
         console.log(this.data.canvasHeight, this.data.canvasWidth)
+      },
+      fail: (err) => {
+        console.error("获取图片信息失败:", err)
+        wx.hideLoading()
+        wx.showToast({
+          title: "图片加载失败",
+          icon: "none",
+          duration: 2000,
+        })
+        // 如果是网络图片加载失败，可以尝试使用默认图片
+        if (imageUrl !== this.data.imageUrl) {
+          setTimeout(() => {
+            this.init(this.data.imageUrl)
+          }, 1000)
+        }
       },
     })
   },
@@ -102,6 +137,21 @@ Page({
           },
         })
       },
+      fail: (err) => {
+        console.error("获取图片信息失败:", err)
+        wx.hideLoading()
+        wx.showToast({
+          title: "图片加载失败",
+          icon: "none",
+          duration: 2000,
+        })
+        // 如果是网络图片加载失败，可以尝试使用默认图片
+        if (imageUrl !== this.data.imageUrl) {
+          setTimeout(() => {
+            this.init(this.data.imageUrl)
+          }, 1000)
+        }
+      },
     })
   },
 
@@ -118,6 +168,21 @@ Page({
       },
       fail: (err) => {
         console.log(err)
+      },
+      fail: (err) => {
+        console.error("获取图片信息失败:", err)
+        wx.hideLoading()
+        wx.showToast({
+          title: "图片加载失败",
+          icon: "none",
+          duration: 2000,
+        })
+        // 如果是网络图片加载失败，可以尝试使用默认图片
+        if (imageUrl !== this.data.imageUrl) {
+          setTimeout(() => {
+            this.init(this.data.imageUrl)
+          }, 1000)
+        }
       },
     })
   },

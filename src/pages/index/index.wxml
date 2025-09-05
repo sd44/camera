@@ -1,3 +1,15 @@
+<!-- 隐私协议弹窗 -->
+<view wx:if="{{showPrivacy}}" class="privacy-modal">
+  <view class="privacy-content">
+    <text class="title">隐私协议授权</text>
+    <text class="desc">我们需要获取您的相机权限，用于拍摄照片。详情请查看《隐私协议》</text>
+    <view class="buttons">
+      <button bindtap="refusePrivacy">拒绝</button>
+      <button bindtap="agreePrivacy" class="agree-btn">同意并继续</button>
+    </view>
+  </view>
+</view>
+
 <view class="card">
   <view class="card_top">
     <image
@@ -21,13 +33,13 @@
     />
     <view class="card_title">权限列表</view>
   </view>
-  <view class="auth_list" @tap="getAuth">
+  <view class="auth_list">
     <view class="auth_box" @tap="getCamera">
       <view class="auth_name">摄像头</view>
       <view class="auth_is_t" wx:if="{{camera}}">已授权</view>
       <view class="auth_is_f" wx:else>未授权</view>
     </view>
-    <view class="auth_box" @tap="getLocation">
+    <view class="auth_box" @tap="getUserLocation">
       <view class="auth_name">位置信息</view>
       <view class="auth_is_t" wx:if="{{userLocation}}">已授权</view>
       <view class="auth_is_f" wx:else>未授权</view>
@@ -56,7 +68,7 @@
     <view class="card_title">常用功能</view>
   </view>
   <view class="gn_list">
-    <view class="gn" bind:tap="goCamera">
+    <view class="gn" @tap="goCamera">
       <image
         class="gn_icon"
         src="../../image/xj.png"
@@ -64,7 +76,7 @@
       />
       <view class="gn_name">水印拍摄</view>
     </view>
-    <view class="gn" bind:tap="goPicture">
+    <view class="gn" @tap="goPicture">
       <image
         class="gn_icon"
         src="../../image/tp.png"
