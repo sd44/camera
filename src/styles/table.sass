@@ -1,0 +1,25 @@
+.t-table
+  width: 100%
+  border: 1px solid #e1e3e6
+  border-radius: 8rpx
+  overflow: hidden
+
+.t-table-row
+  display: flex
+
+.t-table-header
+  background: #f7f8fa
+  font-weight: 500
+
+.t-table-cell
+  flex: 1
+  padding: 24rpx
+  text-align: center
+  border-bottom: 1px solid #e1e3e6
+  font-size: 28rpx
+
+  &:last-child
+    border-right: none
+
+  .t-table-row:last-child &
+    border-bottom: none

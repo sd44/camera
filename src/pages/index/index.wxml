@@ -13,37 +13,11 @@
 </view>
 
 <view class="card">
-  <view class="card_top">
-    <t-icon
-      name="verify"
-      size="24"
-      color="#1296db"
-    />
-    <view class="card_title">权限列表</view>
-  </view>
-  <view class="auth_list">
-    <view class="auth_box" @tap="getCamera">
-      <view class="auth_name">摄像头</view>
-      <view class="auth_is_t" wx:if="{{camera}}">已授权</view>
-      <view class="auth_is_f" wx:else>未授权</view>
-    </view>
-    <view class="auth_box" @tap="getUserLocation">
-      <view class="auth_name">位置信息</view>
-      <view class="auth_is_t" wx:if="{{userLocation}}">已授权</view>
-      <view class="auth_is_f" wx:else>未授权</view>
-    </view>
-    <view class="auth_box" @tap="getWritePhotosAlbum">
-      <view class="auth_name">添加相册</view>
-      <view class="auth_is_t" wx:if="{{writePhotosAlbum}}">已授权</view>
-      <view class="auth_is_f" wx:else>未授权</view>
-    </view>
-  </view>
-
-  <view class="card_tip">提示：小程序需要获取上方列表权限，才可正常使用。</view>
-</view>
-
-<view class="card">
-  <button class="share" open-type="share">分享好友</button>
+  <t-button
+    class="w-full"
+    theme="primary"
+    open-type="share"
+  >分享好友</t-button>
 </view>
 
 <view class="card">
@@ -59,18 +33,51 @@
     <view class="gn" @tap="goCamera">
       <t-icon
         name="camera"
-        size="24"
+        size="30"
         color="#1296db"
       />
-      <view class="gn_name">水印拍摄</view>
+      <view class="text-lg font-bold">水印拍摄</view>
     </view>
     <view class="gn" @tap="goPicture">
       <t-icon
         name="logo-adobe-photoshop"
-        size="24"
+        size="30"
         color="#1296db"
       />
-      <view class="gn_name">图片水印</view>
+      <view class="text-lg font-bold">图片水印</view>
     </view>
   </view>
+</view>
+
+
+<view class="card">
+  <view class="card_top">
+    <t-icon
+      name="work-history"
+      size="24"
+      color="#1296db"
+    />
+    <view class="card_title">水印照片历史记录</view>
+  </view>
+  <view class="t-table">
+    <view class="t-table-row t-table-header">
+      <view class="t-table-cell">地址</view>
+      <view class="t-table-cell">经度</view>
+      <view class="t-table-cell">纬度</view>
+    </view>
+    <view
+      class="t-table-row"
+      wx:for="{{addressHistory}}"
+      wx:key="index"
+    >
+      <view class="t-table-cell">{{item.address}}</view>
+      <view class="t-table-cell">{{item.longitude}}</view>
+      <view class="t-table-cell">{{item.latitude}}</view>
+    </view>
+  </view>
+  <t-button
+    theme="danger"
+    block
+    @tap="clearAddressHistory"
+  >清空记录</t-button>
 </view>

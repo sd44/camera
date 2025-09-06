@@ -1,5 +1,6 @@
 import { config } from "~/config/index"
 import QQMapWX from "~/libs/qqmap-wx-jssdk"
+import { addAddressHistory } from "~/libs/storage"
 import { formatTime } from "~/utils/date"
 import log from "~/utils/log"
 
@@ -453,6 +454,12 @@ Page({
       // 绘制经纬度
       ctx.fillText(`纬度： ${this.data.latitude.toFixed(8)}`, 20, canvasHeight - 140)
       ctx.fillText(`经度： ${this.data.longitude.toFixed(8)}`, 20, canvasHeight - 180)
+
+      addAddressHistory({
+        address,
+        latitude: this.data.latitude,
+        longitude: this.data.longitude,
+      })
 
       // 转换为图片并返回
       return await this.canvasToTempFile(canvas)

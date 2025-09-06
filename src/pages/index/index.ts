@@ -1,134 +1,24 @@
+import type { AddressHistory } from "~/libs/storage"
+import { getAddressHistory } from "~/libs/storage"
 import log from "~/utils/log"
+import { clearAddressHistory } from "../../libs/storage"
 
 Page({
   /**
    * 页面的初始数据
    */
   data: {
-    camera: false,
-    userLocation: false,
-    writePhotosAlbum: false,
-
-    showPrivacy: false, // 控制隐私协议弹窗显示
+    addressHistoy: [] as AddressHistory[],
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad() {
-    // this.getAuth()
+    this.setData({
+      addressHistoy: getAddressHistory(),
+    })
   },
-
-  // getAuth() {
-  //   wx.getSetting({
-  //     success: (res) => {
-  //       this.setData({ hasCheckedAuth: true })
-  //       log.info(res.authSetting)
-  //       // 确保所有值都是布尔值，避免 undefined
-  //       const cameraAuth = res.authSetting["scope.camera"] ?? false
-  //       const albumAuth = res.authSetting["scope.writePhotosAlbum"] ?? false
-  //       const locationAuth = res.authSetting["scope.userLocation"] ?? false
-  //       log.info("权限状态", { cameraAuth, albumAuth, locationAuth })
-
-  //       this.setData({
-  //         camera: cameraAuth,
-  //         writePhotosAlbum: albumAuth,
-  //         userLocation: locationAuth,
-  //       })
-  //     },
-  //   })
-  // },
-
-  // getWritePhotosAlbum() {
-  //   wx.authorize({
-  //     scope: "scope.writePhotosAlbum",
-  //     success: () => {
-  //       // 直接设置状态，避免再次调用 getSetting
-  //       this.setData({
-  //         writePhotosAlbum: true,
-  //       })
-  //       wx.showToast({
-  //         title: "已获得相册权限",
-  //         icon: "success",
-  //         duration: 1500,
-  //       })
-  //     },
-  //     fail: (err) => {
-  //       log.error("获取相册权限失败", err)
-  //       wx.showModal({
-  //         title: "权限申请失败",
-  //         content: "请在设置中手动开启权限",
-  //         confirmText: "去设置",
-  //         success: (res) => {
-  //           if (res.confirm) {
-  //             wx.openSetting()
-  //           }
-  //         },
-  //       })
-  //     },
-  //   })
-  // },
-
-  // getCamera() {
-  //   log.info("请求相机权限")
-  //   wx.authorize({
-  //     scope: "scope.camera",
-  //     success: () => {
-  //       // 直接设置状态，避免再次调用 getSetting
-  //       this.setData({
-  //         camera: true,
-  //       })
-  //       wx.showToast({
-  //         title: "已获得相机权限",
-  //         icon: "success",
-  //         duration: 1500,
-  //       })
-  //     },
-  //     fail: (err) => {
-  //       log.error("获取相机权限失败", err)
-  //       wx.showModal({
-  //         title: "权限申请失败",
-  //         content: "请在设置中手动开启权限",
-  //         confirmText: "去设置",
-  //         success: (res) => {
-  //           if (res.confirm) {
-  //             wx.openSetting()
-  //           }
-  //         },
-  //       })
-  //     },
-  //   })
-  // },
-
-  // getUserLocation() {
-  //   wx.authorize({
-  //     scope: "scope.userLocation",
-  //     success: () => {
-  //       // 直接设置状态，避免再次调用 getSetting
-  //       this.setData({
-  //         userLocation: true,
-  //       })
-  //       wx.showToast({
-  //         title: "已获得位置权限",
-  //         icon: "success",
-  //         duration: 1500,
-  //       })
-  //     },
-  //     fail: (err) => {
-  //       log.error("获取位置权限失败", err)
-  //       wx.showModal({
-  //         title: "权限申请失败",
-  //         content: "请在设置中手动开启权限",
-  //         confirmText: "去设置",
-  //         success: (res) => {
-  //           if (res.confirm) {
-  //             wx.openSetting()
-  //           }
-  //         },
-  //       })
-  //     },
-  //   })
-  // },
 
   goCamera() {
     wx.navigateTo({
@@ -155,6 +45,13 @@ Page({
           icon: "none",
         })
       },
+    })
+  },
+
+  clearAddressHistory() {
+    clearAddressHistory()
+    this.setData({
+      addressHistoy: [],
     })
   },
   /**
