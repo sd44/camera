@@ -20,26 +20,23 @@
 
 <view class="bottom_box">
   <view class="card" bind:tap="chooseLocation">
-    <image
-      class="card_icon"
-      src="../../image/wz.png"
-      mode="widthFix"
+    <t-icon
+      name="location"
+      size="24"
     />
     <view class="card_name">定位</view>
   </view>
   <view class="card" bind:tap="setTime">
-    <image
-      class="card_icon"
-      src="../../image/sj.png"
-      mode="widthFix"
+    <t-icon
+      name="time"
+      size="24"
     />
     <view class="card_name">时间</view>
   </view>
   <view class="card" bind:tap="createPicture">
-    <image
-      class="card_icon"
-      src="../../image/sc.png"
-      mode="widthFix"
+    <t-icon
+      name="logo-instagram"
+      size="24"
     />
     <view class="card_name">生成</view>
   </view>

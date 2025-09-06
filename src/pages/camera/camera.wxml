@@ -31,42 +31,37 @@
 
 <view class="handle">
   <button class="handle_card" bind:tap="chooseLocation">
-    <image
-      class="handle_card_icon"
-      src="../../image/wz.png"
-      mode="widthFix"
+    <t-icon
+      name="location"
+      size="24"
     />
     <view class="handle_card_name">定位</view>
   </button>
   <button class="handle_card" bind:tap="setDevice">
-    <image
-      class="handle_card_icon"
-      src="../../image/qh.png"
-      mode="widthFix"
+    <t-icon
+      name="swap"
+      size="24"
     />
     <view class="handle_card_name">切换</view>
   </button>
   <button class="handle_ps" bind:tap="takePhoto">
-    <image
-      class="handle_ps_image"
-      src="../../image/ps.png"
-      mode="widthFix"
+    <t-icon
+      name="camera-2"
+      size="24"
     />
     <view class="handle_ps_name">拍摄</view>
   </button>
   <button class="handle_card" bind:tap="setFlash">
-    <image
-      class="handle_card_icon"
-      src="../../image/sd.png"
-      mode="widthFix"
+    <t-icon
+      name="flashlight"
+      size="24"
     />
     <view class="handle_card_name">闪光</view>
   </button>
   <button class="handle_card" open-type="share">
-    <image
-      class="handle_card_icon"
-      src="../../image/fx.png"
-      mode="widthFix"
+    <t-icon
+      name="share"
+      size="24"
     />
     <view class="handle_card_name">分享</view>
   </button>
