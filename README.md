@@ -1,7 +1,4 @@
-# weapp-vite-tailwindcss-tdesign-mall-retail
-
- [墨韩办公工具箱](https://github.com/sd44/camera)
-
+# 墨韩办公工具箱
 
 采用集成 `tailwindcss`, `tdesign` 模板的 [weapp-vite](https://vite.icebreaker.top/)，进行原生微信小程序开发和移植。
 
@@ -34,3 +31,5 @@
 
 0. `weapp-vite`: https://vite.icebreaker.top/
 1. `weapp-tailwindcss`: https://tw.icebreaker.top/
+2. https://github.com/sd44/camera
+3. https://gitee.com/sd44/camera

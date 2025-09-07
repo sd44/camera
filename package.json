@@ -27,7 +27,7 @@
     "open": "weapp-vite open",
     "g": "weapp-vite generate",
     "postinstall": "weapp-tw patch",
-    "format": "bunx eslint --fix && bunx ultracite format",
+    "format": "bunx eslint --fix && bunx ultracite fix",
     "prepare": "husky",
     "codegen": "bun graphql-codegen"
   },
