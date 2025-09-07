@@ -1,11 +1,5 @@
-import { config } from "~/config"
-import QQMapWX from "~/libs/qqmap-wx-jssdk"
 import { formatTime } from "~/utils/date"
 import log from "~/utils/log"
-
-const qqmapsdk = new QQMapWX({
-  key: config.qqMapKey, // 从配置文件中获取密钥
-})
 
 Page({
   data: {
@@ -18,6 +12,9 @@ Page({
     address: "",
     showPicker: false,
     timer: 0,
+
+    latitude: 0,
+    longitude: 0,
   },
 
   /**
@@ -127,25 +124,11 @@ Page({
       success: (res) => {
         log.info(res)
         this.setData({
-          address: res.address,
+          address: res.name || res.address || "未知地点",
+          longitude: res.longitude,
+          latitude: res.latitude,
         })
-        qqmapsdk.geocoder({
-          address: res.address,
-          success: (res: any) => {
-            log.info(res)
-            this.setData({
-              latitude: res.result.location.lat,
-              longitude: res.result.location.lng,
-            })
-          },
-          fail: (err: any) => {
-            log.error(err)
-            this.setData({
-              latitude: 0,
-              longitude: 0,
-            })
-          },
-        })
+        console.log(this.data.latitude, this.data.longitude, this.data.address)
       },
       fail: (err) => {
         log.error("获取图片信息失败:", err)
@@ -273,18 +256,21 @@ Page({
         image.onload = () => {
           ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight)
 
-          ctx.font = "normal 28px null"
+          ctx.font = "normal 24px null"
           ctx.fillStyle = "#ffffff"
           ctx.textBaseline = "bottom"
 
           // 绘制地址
-          ctx.fillText(this.data.address, 20, canvasHeight - 20)
+          ctx.fillText(this.data.address || "未知地点", 20, canvasHeight - 50)
 
           // 绘制时间
-          ctx.fillText(`${this.data.date} ${this.data.time}`, 20, canvasHeight - 65)
+          ctx.fillText(`${this.data.date} ${this.data.time}`, 20, canvasHeight - 55)
 
           // 绘制星期
-          ctx.fillText(this.data.week, 20, canvasHeight - 115)
+          ctx.fillText(this.data.week, 20, canvasHeight - 90)
+
+          ctx.fillText(`纬度：${this.data.latitude}`, 20, canvasHeight - 125)
+          ctx.fillText(`经度：${this.data.longitude}`, 20, canvasHeight - 160)
 
           wx.canvasToTempFilePath({
             canvas,
