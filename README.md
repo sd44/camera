@@ -1,8 +1,14 @@
 # weapp-vite-tailwindcss-tdesign-mall-retail
 
- [TDesign 零售行业模版示例小程序](https://github.com/Tencent/tdesign-miniprogram-starter-retail) [weapp-vite](https://vite.icebreaker.top/) 移植版
+ [墨韩办公工具箱](https://github.com/sd44/camera)
 
-`weapp-vite`已集成 `tailwindcss`, `tdesign` 的模板，方便原生微信小程序开发和移植。
+
+采用集成 `tailwindcss`, `tdesign` 模板的 [weapp-vite](https://vite.icebreaker.top/)，进行原生微信小程序开发和移植。
+
+目前开发和移植:
+1. [Byclemon/watermark-camera](https://github.com/Byclemon/watermark-camera)
+
+本项目完全免费开源，用于自己和他人学习原生微信小程序开发。
 
 ## 使用方式
 
@@ -28,4 +34,3 @@
 
 0. `weapp-vite`: https://vite.icebreaker.top/
 1. `weapp-tailwindcss`: https://tw.icebreaker.top/
-2. TDesign 零售行业模版示例: https://github.com/Tencent/tdesign-miniprogram-starter-retail
