@@ -6,18 +6,17 @@
   flash="{{flash}}"
   style="position: fixed;top:0;width:{{cameraWidth}}px;height:{{cameraHeight}}px;"
 />
-<image
-  src="{{tempImagePath}}"
-  mode="widthFix"
-  style="width: 750rpx;"
-  wx:else
-/>
-
+<view style="position: relative;" wx:else>
+  <image
+    src="{{tempImagePath}}"
+    mode="widthFix"
+    style="width: 750rpx;"
+  />
+</view>
 <view class="watermark">
   <view class="week">{{'经度：' + longitude}}</view>
   <view class="week">{{'纬度：' + latitude}}</view>
-  <view class="week">{{week}}</view>
-  <view class="time">{{date+' '+time}}</view>
+  <view class="time">{{date+' '+time + ' ' + week}}</view>
   <view class="location_box">
     <view class="location">{{address}}</view>
   </view>
@@ -30,13 +29,6 @@
 />
 
 <view class="handle">
-  <button class="handle_card" bind:tap="chooseLocation">
-    <t-icon
-      name="location"
-      size="24"
-    />
-    <view class="handle_card_name">定位</view>
-  </button>
   <button class="handle_card" bind:tap="setDevice">
     <t-icon
       name="swap"
@@ -44,12 +36,13 @@
     />
     <view class="handle_card_name">切换</view>
   </button>
-  <button class="handle_ps" bind:tap="takePhoto">
+  <button class="handle_card" bind:tap="takePhoto">
     <t-icon
       name="camera-2"
-      size="24"
+      size="28"
+      color="#1296db"
     />
-    <view class="handle_ps_name">拍摄</view>
+    <view class="handle_card_name">拍摄</view>
   </button>
   <button class="handle_card" bind:tap="setFlash">
     <t-icon
@@ -58,11 +51,11 @@
     />
     <view class="handle_card_name">闪光</view>
   </button>
-  <button class="handle_card" open-type="share">
+  <!-- <button class="handle_card" open-type="share">
     <t-icon
-      name="share"
-      size="24"
+    name="share"
+    size="24"
     />
     <view class="handle_card_name">分享</view>
-  </button>
+    </button> -->
 </view>

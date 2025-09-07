@@ -35,8 +35,8 @@
   // https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#requiredPrivateInfos
   "requiredPrivateInfos": [
     "getLocation",
-    "startLocationUpdate",
-    "onLocationChange",
+    // "startLocationUpdate", // 对个人开发者不支持
+    // "onLocationChange",
     "chooseLocation"
   ],
   "componentFramework": "glass-easel",

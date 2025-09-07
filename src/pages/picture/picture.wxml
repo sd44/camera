@@ -10,14 +10,11 @@
   mode="widthFix"
 />
 
-<view class="watermark" wx:if="{{week}}">
+<view class="watermark" wx:if="{{week || address}}">
   <view> {{'经度：' + longitude}} </view>
   <view> {{'纬度：' + latitude}} </view>
-  <view class="week">{{week}}</view>
-  <view class="time">{{date+' '+time}}</view>
-  <view class="location_box">
-    <view class="location">{{address}}</view>
-  </view>
+  <view>{{date+' '+time + '  ' + week}}</view>
+  <view>{{'地址：' + address}}</view>
 </view>
 
 <view class="bottom_box">
@@ -52,7 +49,7 @@
         mode="date"
         value="{{date}}"
         start="2025-01-01"
-        end="2025-09-07"
+        end="2025-12-31"
         bindchange="bindDateChange"
       >
         <view class="picker">

@@ -123,12 +123,19 @@ Page({
     wx.chooseLocation({
       success: (res) => {
         log.info(res)
+        let address = res.name
+        if (res.name.length === 0) {
+          if (res.address.length === 0) {
+            address = "未知地点"
+          } else {
+            address = res.address
+          }
+        }
         this.setData({
-          address: res.name || res.address || "未知地点",
+          address,
           longitude: res.longitude,
           latitude: res.latitude,
         })
-        console.log(this.data.latitude, this.data.longitude, this.data.address)
       },
       fail: (err) => {
         log.error("获取图片信息失败:", err)
@@ -261,16 +268,17 @@ Page({
           ctx.textBaseline = "bottom"
 
           // 绘制地址
-          ctx.fillText(this.data.address || "未知地点", 20, canvasHeight - 50)
+          ctx.fillText(this.data.address, 20, canvasHeight - 20)
 
           // 绘制时间
-          ctx.fillText(`${this.data.date} ${this.data.time}`, 20, canvasHeight - 55)
+          ctx.fillText(
+            `${this.data.date} ${this.data.time}  ${this.data.week}`,
+            20,
+            canvasHeight - 55
+          )
 
-          // 绘制星期
-          ctx.fillText(this.data.week, 20, canvasHeight - 90)
-
-          ctx.fillText(`纬度：${this.data.latitude}`, 20, canvasHeight - 125)
-          ctx.fillText(`经度：${this.data.longitude}`, 20, canvasHeight - 160)
+          ctx.fillText(`纬度：${this.data.latitude}`, 20, canvasHeight - 90)
+          ctx.fillText(`经度：${this.data.longitude}`, 20, canvasHeight - 125)
 
           wx.canvasToTempFilePath({
             canvas,
