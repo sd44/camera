@@ -8,7 +8,9 @@
     <view class="card_title">智能水印相机</view>
   </view>
   <view class="card_contnet">
-    拍照自动添加时间、地点、经纬度等水印文字，可用于工作考勤、学习打卡、工作取证等，支持自定义内容以及给现有照片添加水印。无需安装，无需注册，即开即用。
+    <view>对 https://github.com/Byclemon/watermark-camera 的简单移植，项目源代码在 https://gitee.com/sd44/camera </view>
+
+    <view> 拍照时自动添加时间、地点、经纬度等水印文字；支持自定义内容以及给现有照片添加水印。无需安装，无需注册，即开即用。</view>
   </view>
 </view>
 

@@ -495,80 +495,80 @@ Page({
   onShareAppMessage() {},
   onShareTimeline() {},
 
-  // 初始化地理位置监听
-  initLocationListener() {
-    // 第一步：检查用户是否授权位置权限
-    wx.getSetting({
-      success: (settingRes) => {
-        // 若已授权，直接开启定位
-        if (settingRes.authSetting["scope.userLocation"]) {
-          this.startLocationUpdate()
-        } else {
-          wx.authorize({
-            scope: "scope.userLocation",
-            success: () => {
-              // 授权成功后，开启前台定位
-              this.startLocationUpdate()
-            },
-            fail: () => {
-              // 用户拒绝授权，引导用户手动开启
-              wx.showModal({
-                title: "位置权限提示",
-                content: "需要获取您的地理位置，请确认授权",
-                confirmText: "去设置",
-                cancelText: "取消",
-                success: (res) => {
-                  if (res.confirm) {
-                    wx.openSetting({
-                      success: (res2) => {
-                        if (res2.authSetting["scope.userLocation"]) {
-                          this.startLocationUpdate()
-                        }
-                      },
-                    })
-                  } else {
-                    wx.showToast({
-                      title: "未授权位置权限，部分功能受限",
-                      icon: "none",
-                      duration: 2000,
-                    })
-                  }
-                },
-              })
-            },
-          })
-        }
-      },
-      fail: (err) => {
-        log.error("获取设置失败", err)
-      },
-    })
-  },
+  // // 初始化地理位置监听
+  // initLocationListener() {
+  //   // 第一步：检查用户是否授权位置权限
+  //   wx.getSetting({
+  //     success: (settingRes) => {
+  //       // 若已授权，直接开启定位
+  //       if (settingRes.authSetting["scope.userLocation"]) {
+  //         this.startLocationUpdate()
+  //       } else {
+  //         wx.authorize({
+  //           scope: "scope.userLocation",
+  //           success: () => {
+  //             // 授权成功后，开启前台定位
+  //             this.startLocationUpdate()
+  //           },
+  //           fail: () => {
+  //             // 用户拒绝授权，引导用户手动开启
+  //             wx.showModal({
+  //               title: "位置权限提示",
+  //               content: "需要获取您的地理位置，请确认授权",
+  //               confirmText: "去设置",
+  //               cancelText: "取消",
+  //               success: (res) => {
+  //                 if (res.confirm) {
+  //                   wx.openSetting({
+  //                     success: (res2) => {
+  //                       if (res2.authSetting["scope.userLocation"]) {
+  //                         this.startLocationUpdate()
+  //                       }
+  //                     },
+  //                   })
+  //                 } else {
+  //                   wx.showToast({
+  //                     title: "未授权位置权限，部分功能受限",
+  //                     icon: "none",
+  //                     duration: 2000,
+  //                   })
+  //                 }
+  //               },
+  //             })
+  //           },
+  //         })
+  //       }
+  //     },
+  //     fail: (err) => {
+  //       log.error("获取设置失败", err)
+  //     },
+  //   })
+  // },
 
-  // 开启前台定位监听
-  startLocationUpdate() {
-    wx.startLocationUpdate({
-      success: () => {
-        // 定位开启成功后，监听位置变化
-        wx.onLocationChange((res) => {
-          log.info("最新位置：", res)
-          // 示例：更新页面数据中的经纬度，用于地图渲染或其他逻辑
-          this.setData({
-            latitude: res.latitude,
-            longitude: res.longitude,
-          })
+  // // 开启前台定位监听
+  // startLocationUpdate() {
+  //   wx.startLocationUpdate({
+  //     success: () => {
+  //       // 定位开启成功后，监听位置变化
+  //       wx.onLocationChange((res) => {
+  //         log.info("最新位置：", res)
+  //         // 示例：更新页面数据中的经纬度，用于地图渲染或其他逻辑
+  //         this.setData({
+  //           latitude: res.latitude,
+  //           longitude: res.longitude,
+  //         })
 
-          // 若需要根据位置更新地址信息（如逆地理编码），可调用wx.reverseGeocoder
-          this.getAddressFromLocation(res.latitude, res.longitude)
-        })
-      },
-      fail: (err) => {
-        log.error("开启定位失败：", err)
-        wx.showToast({
-          title: "定位开启失败，请检查设置",
-          icon: "none",
-        })
-      },
-    })
-  },
+  //         // 若需要根据位置更新地址信息（如逆地理编码），可调用wx.reverseGeocoder
+  //         this.getAddressFromLocation(res.latitude, res.longitude)
+  //       })
+  //     },
+  //     fail: (err) => {
+  //       log.error("开启定位失败：", err)
+  //       wx.showToast({
+  //         title: "定位开启失败，请检查设置",
+  //         icon: "none",
+  //       })
+  //     },
+  //   })
+  // },
 })
